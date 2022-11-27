@@ -1,0 +1,85 @@
+@startuml
+
+    class "Explanation of the symbols used" as DESCRIPTION #FFF {
+    - AutoField (identifiers)
+    ..
+    + Regular field (anything)
+    ..
+    # ForeignKey (ManyToMany)
+    ..
+    ~ ForeignKey (OneToOne, OneToMany)
+    --
+}
+
+
+class "roadmaps.Block <Roadmaps>" as roadmaps.Block #d6f4e9 {
+    Блок
+    ..
+    Модель блока дорожной карты
+    --
+    + id (BigAutoField) - 
+    ~ roadmap (ForeignKey) - 
+    + name (CharField) - 
+    + description (TextField) - 
+    ~ parent (ForeignKey) - 
+    --
+}
+roadmaps.Block *-- roadmaps.Roadmap
+roadmaps.Block *-- roadmaps.Block
+
+
+class "roadmaps.Roadmap <Roadmaps>" as roadmaps.Roadmap #d6f4e9 {
+    Дорожная карта
+    ..
+    Модель дорожной карты
+    --
+    + id (BigAutoField) - 
+    + name (CharField) - 
+    + description (TextField) - 
+    --
+}
+
+
+class "roadmaps.SiteParam <Roadmaps>" as roadmaps.SiteParam #d6f4e9 {
+    Параметры сайта
+    ..
+    Параметры сайта
+    для парсинга
+    --
+    + id (BigAutoField) - 
+    ~ block (ForeignKey) - 
+    ~ site (ForeignKey) - 
+    + param (TextField) - 
+    --
+}
+roadmaps.SiteParam *-- roadmaps.Block
+roadmaps.SiteParam *-- scraping.Site
+
+
+class "scraping.Response <Scraping>" as scraping.Response #f4e1d6 {
+    Резултат парсинга
+    ..
+    Резултаты парсинга
+    --
+    + id (BigAutoField) - 
+    + last_update (DateTimeField) - 
+    + result (TextField) - 
+    ~ site_param (ForeignKey) - 
+    --
+}
+scraping.Response *-- roadmaps.SiteParam
+
+
+class "scraping.Site <Scraping>" as scraping.Site #f4e1d6 {
+    Сайт
+    ..
+    Информация о сайтах
+    --
+    + id (BigAutoField) - 
+    + name (CharField) - 
+    + domain (URLField) - 
+    --
+}
+
+
+@enduml
